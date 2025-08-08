@@ -1,0 +1,23 @@
+.project
+.settings
+.classpath
+.eclipse
+
+.idea
+*.iml
+
+*.jar
+*.war
+*.ear
+
+target/
+
+*.log
+
+hs_err_pid*
+
+# Mac crap
+.DS_Store
+log4j.properties
+logex-exporter
+

@@ -1,0 +1,45 @@
+
+[
+  {
+    "name": "org.logex.exporter.config.AppConfig",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.logex.exporter.config.MetricConfig",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.logex.exporter.config.LabelConfig",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.logex.exporter.metric.CounterHandler",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.logex.exporter.metric.GaugeHandler",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.logex.exporter.metric.HistogramHandler",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.logex.exporter.metric.SummaryHandler",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.github.benmanes.caffeine.cache.SSLMS",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.github.benmanes.caffeine.cache.PSLMS",
+    "allDeclaredConstructors": true
+  }
+]

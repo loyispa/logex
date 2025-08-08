@@ -1,0 +1,37 @@
+# The port for the Prometheus exporter to listen on.
+port: 9090
+
+# The directory path to scan for log files.
+path: /path/*/to/**/your/logs
+
+# Interval in seconds to scan for new or removed log files.
+file_scan_interval_seconds: 10
+
+# Timeout in seconds for a log tailer to be considered inactive and removed.
+file_inactivity_timeout_seconds: 3600
+
+# Whether to start tailing logs from the end of the file.
+# If false, it starts from the beginning.
+tail_from_end: false
+
+# Predefined regex patterns that can be referenced in the metrics section.
+patterns:
+  LEVEL: '(DEBUG|TRACE|INFO|WARNING|ERROR|FATAL)'
+
+# A list of metrics to be exported.
+metrics:
+  - name: "lines_total"
+    help: "Total number of lines."
+    type: "counter"
+    max_label_sets: 1000
+    match: '\[%{DATA:thread}\] %{LEVEL:level} %{DATA:class} - %{GREEDYDATA:message}' # Reference to a predefined pattern
+    labels:
+      - name: "level"
+        source_field: "level"
+      - name: "class"
+        source_field: "class"
+      - name: "thread"
+        source_field: "thread"
+        action: "regex_replace"
+        regex: '\d+'
+        replacement: ""
