@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 class LabelCacheTest {
 
@@ -42,13 +43,14 @@ class LabelCacheTest {
   }
 
   @Test
+  @Timeout(value = 10, unit = TimeUnit.SECONDS)
   void testCacheExpiration() throws InterruptedException {
     LabelCache<String> expiringCache = new LabelCache<>(1, 1, mockRemoveCallback);
     List<String> labelValues = Arrays.asList("value1", "value2");
     expiringCache.getOrCreate(labelValues, () -> "expiringValue");
 
     // Wait for cache to expire
-    Thread.sleep(1500);
+    Thread.sleep(2000);
 
     // Accessing it again should create a new entry and trigger removal callback
     String newValue = expiringCache.getOrCreate(labelValues, () -> "newExpiringValue");
@@ -56,6 +58,9 @@ class LabelCacheTest {
     // The removal callback is called asynchronously by Caffeine, so we might need to wait a bit or
     // check for it in a more robust way in a real scenario.
     // For this simple test, we'll assume it's called relatively quickly.
+    while (!removeCallbackCalled.get()) {
+      Thread.sleep(1000);
+    }
     assertTrue(removeCallbackCalled.get());
   }
 
