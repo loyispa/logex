@@ -18,7 +18,6 @@ package org.logex.exporter.log;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -125,7 +124,7 @@ class LogTailerManagerTest {
     Files.createFile(logFile);
     activeTailers.put(logFile, mock(LogTailer.class)); // Pre-add the tailer
 
-    when(mockAppConfig.getPath()).thenReturn(tempDir.toString() + File.separatorChar +  "*.log");
+    when(mockAppConfig.getPath()).thenReturn(tempDir.resolve("*.log").toString());
 
     // When
     logTailerManager.findAndTailFiles();
