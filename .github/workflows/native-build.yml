@@ -13,11 +13,35 @@ jobs:
 
     steps:
       - name: Delete old pre-releases
-        uses: dev-draco/delete-tag-and-release@v2
+        uses: actions/github-script@v6
         with:
-          delete_tags_pattern: 'pre-release-v*'
-          keep_latest: 1
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+            });
+
+            const preReleases = releases.data.filter(release => 
+              release.tag_name.startsWith('pre-release-v')
+            ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            // Keep only the latest pre-release
+            for (let i = 1; i < preReleases.length; i++) {
+              const releaseToDelete = preReleases[i];
+              console.log(`Deleting old pre-release: ${releaseToDelete.tag_name}`);
+              await github.rest.repos.deleteRelease({
+                owner,
+                repo,
+                release_id: releaseToDelete.id,
+              });
+              // Also delete the tag associated with the release
+              await github.rest.git.deleteRef({
+                owner,
+                repo,
+                ref: `tags/${releaseToDelete.tag_name}`,
+              });
+            }
 
   build:
     needs: cleanup # Ensure cleanup runs before build
