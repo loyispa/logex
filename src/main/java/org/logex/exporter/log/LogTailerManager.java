@@ -57,11 +57,11 @@ public class LogTailerManager {
 
   public void findAndTailFiles() {
     try {
-      Path startingPath = Paths.get(appConfig.getPath()).getParent();
-      while (startingPath != null && !Files.exists(startingPath)) {
-        startingPath = startingPath.getParent();
+      Path basePath = Paths.get(appConfig.getPath()).getParent();
+      while (basePath != null && !Files.exists(basePath)) {
+        basePath = basePath.getParent();
       }
-      if (startingPath == null) {
+      if (basePath == null) {
         LOG.warn("Warning: Base path for glob pattern does not exist: {}", appConfig.getPath());
         return;
       }
@@ -70,9 +70,9 @@ public class LogTailerManager {
           FileSystems.getDefault()
               .getPathMatcher("glob:" + Paths.get(appConfig.getPath()).getFileName().toString());
 
-      Files.walk(startingPath)
+      Files.walk(basePath)
           .filter(Files::isRegularFile)
-          .filter(matcher::matches)
+          .filter(path -> matcher.matches(path.getFileName()))
           .filter(path -> !isFileInactive.test(path))
           .forEach(
               path ->
