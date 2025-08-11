@@ -67,7 +67,8 @@ public class LogTailerManager {
       }
 
       final PathMatcher matcher =
-          FileSystems.getDefault().getPathMatcher("glob:" + appConfig.getPath());
+          FileSystems.getDefault()
+              .getPathMatcher("glob:" + Paths.get(appConfig.getPath()).getFileName().toString());
 
       Files.walk(startingPath)
           .filter(Files::isRegularFile)
