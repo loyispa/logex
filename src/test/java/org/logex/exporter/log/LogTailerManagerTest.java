@@ -124,7 +124,7 @@ class LogTailerManagerTest {
     Files.createFile(logFile);
     activeTailers.put(logFile, mock(LogTailer.class)); // Pre-add the tailer
 
-    when(mockAppConfig.getPath()).thenReturn(tempDir.resolve("*.log").toString());
+    when(mockAppConfig.getPath()).thenReturn(tempDir + "/*.log");
 
     // When
     logTailerManager.findAndTailFiles();
