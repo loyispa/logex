@@ -51,13 +51,9 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
-            target_name: logex-exporter
-          - os: windows-latest
-            target_name: logex-exporter.exe
-          - os: macos-latest
             target_name: logex-exporter
 
     steps:
