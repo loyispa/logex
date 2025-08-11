@@ -85,4 +85,12 @@ class RegexReplaceActionTest {
     String result = action.process("text123text", config);
     assertEquals("texttext", result);
   }
+
+  @Test
+  void testProcessWithCaptureGroup() {
+    config.setRegex("(\\w+)-(\\w+)");
+    config.setReplacement("$2-$1");
+    String result = action.process("hello-world", config);
+    assertEquals("world-hello", result);
+  }
 }

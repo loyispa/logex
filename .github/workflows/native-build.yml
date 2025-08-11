@@ -1,0 +1,76 @@
+name: Build Native Executable
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    - cron: '0 0 * * 0' # Runs every Sunday at midnight UTC
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      releases: write
+
+    steps:
+      - name: Delete old pre-releases
+        uses: dev-draco/delete-tag-and-release@v2
+        with:
+          delete_tags_pattern: 'pre-release-v*'
+          keep_latest: 1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    needs: cleanup # Ensure cleanup runs before build
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      packages: write
+      releases: write
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            target_name: logex-exporter
+          - os: windows-latest
+            target_name: logex-exporter.exe
+          - os: macos-latest
+            target_name: logex-exporter
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java and GraalVM
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build native executable
+        run: mvn -Pnative package
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: pre-release-v${{ github.run_number }}
+          release_name: Pre-release Build ${{ github.run_number }}
+          draft: false
+          prerelease: true
+
+      - name: Upload native executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: target/${{ matrix.target_name }}
+          asset_name: ${{ matrix.target_name }}-${{ matrix.os }}
+          asset_content_type: application/octet-stream
