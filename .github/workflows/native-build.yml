@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
-      releases: write
 
     steps:
       - name: Delete old pre-releases
@@ -26,8 +24,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
-      packages: write
-      releases: write
 
     strategy:
       matrix:
