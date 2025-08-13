@@ -30,6 +30,8 @@ public class LabelConfig {
   @JsonProperty("default_value")
   private String defaultValue;
 
+  private String script;
+
   // Getters and Setters
   public String getName() {
     return name;
@@ -77,5 +79,13 @@ public class LabelConfig {
 
   public void setDefaultValue(String defaultValue) {
     this.defaultValue = defaultValue;
+  }
+
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
   }
 }

@@ -35,6 +35,5 @@ metrics:
         replacement: "$1"
       - name: "thread"
         source_field: "thread"
-        action: "regex_replace"
-        regex: '\d+'
-        replacement: ""
+        action: "js"
+        script: 'return value.substring(0, value.indexOf("."))'

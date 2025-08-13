@@ -24,6 +24,7 @@ public class LabelActionFactory {
 
   static {
     actions.put("regex_replace", new RegexReplaceAction());
+    actions.put("js", new JavaScriptAction());
   }
 
   public static LabelAction getAction(String action) {
