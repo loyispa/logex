@@ -23,7 +23,7 @@ jobs:
             });
 
             const preReleases = releases.data.filter(release => 
-              release.tag_name.startsWith('pre-release-v')
+              release.tag_name.startsWith('prerelease-v')
             ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             // Keep only the latest pre-release
@@ -67,6 +67,10 @@ jobs:
           java-version: '24'
           cache: 'maven'
 
+      - name: Get Project Version
+        id: get_version
+        run: echo "version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
       - name: Build native executable
         run: mvn -Pnative package
 
@@ -76,8 +80,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: pre-release-v${{ github.run_number }}
-          release_name: Pre-release Build ${{ github.run_number }}
+          tag_name: prerelease-v${{ steps.get_version.outputs.version }}
+          release_name: Pre-release Build v${{ steps.get_version.outputs.version }}
           draft: false
           prerelease: true
 
